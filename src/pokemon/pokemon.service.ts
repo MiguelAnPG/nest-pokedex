@@ -6,6 +6,7 @@ import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Console } from 'console';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class PokemonService {  
@@ -17,7 +18,7 @@ export class PokemonService {
   ){}
 
 
-  //***********INICIO CODIGO PARA INSERTAR REGISTROS NUEVOS EN LA BASE DE DATOS***********
+  //*-------------------INICIO CODIGO PARA INSERTAR REGISTROS NUEVOS EN LA BASE DE DATOS-------------------*/
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
 
@@ -31,12 +32,25 @@ export class PokemonService {
       this.handleException(error);
     }
   }
-  //***********FINALIZA CODIGO PARA INSERTAR REGISTROS NUEVOS EN LA BASE DE DATOS*************
+  //*-------------------FINALIZA CODIGO PARA INSERTAR REGISTROS NUEVOS EN LA BASE DE DATOS-------------------*/
 
 
-  findAll() {
-    return `This action returns all pokemon`;
+  //*-------------------INICIO CODIGO PARA CONSULTAR TODOS LOS REGISTROS NUEVOS EN LA BASE DE DATOS  -------------------*/
+  findAll(paginationDto: PaginationDto) {
+
+    const { limit = 10, offset = 0} = paginationDto;
+
+    return this.pokemonModel.find()
+      .limit(limit)
+      .skip(offset)
+      .sort({
+        no: 1
+      })
+      //opcional
+      .select('-__v');
+
   }
+  //*-------------------FINALIZA CODIGO PARA CONSULTAR TODOS LOS REGISTROS NUEVOS EN LA BASE DE DATOS  -------------------*/
 
 
   //*-------------------INICIA CODIGO PARA CONSULTAR REGISTROS EN LA BASE DE DATOS-------------------*/
